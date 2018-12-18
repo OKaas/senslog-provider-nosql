@@ -52,7 +52,7 @@ public class ObservationController extends BaseController {
 
 		ObjectId unitGroupId = sensor.getUnitGroupId();
 
-		if(!isApproved(unitGroupId, token.getUid(), PrivilegeDefinition.OBSERVATION_CREATE)) {
+		if(!isApproved(unitGroupId, PrivilegeDefinition.OBSERVATION_CREATE)) {
 			LOGGER.warn("User with id: \'{}\' try to perform not privilege operation!", token.getUid());
 			return HttpStatus.UNAUTHORIZED;
 		}
@@ -81,7 +81,7 @@ public class ObservationController extends BaseController {
 
 		Sensor sensor = sensorRepository.findOne(observation.getSensorId());
 
-		if(!isApproved(sensor.getUnitGroupId(), token.getUid(), PrivilegeDefinition.OBSERVATION_READ)) {
+		if(!isApproved(sensor.getUnitGroupId(), PrivilegeDefinition.OBSERVATION_READ)) {
 			LOGGER.warn("User with id: \'{}\' try to perform not privilege operation!", token.getUid());
 			return null;
 		}

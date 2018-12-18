@@ -57,7 +57,7 @@ public class PrivilegesController extends BaseController {
                              @RequestBody PrivilegeCreate privilegeCreate
     ) {
 
-        if(!isApproved(privilegeCreate.getUnitGroupId(), token.getUid(), PrivilegeDefinition.PRIVILEGE_CREATE)) {
+        if(!isApproved(privilegeCreate.getUnitGroupId(), PrivilegeDefinition.PRIVILEGE_CREATE)) {
             LOGGER.warn("User with id: \'{}\' try to perform not privilege operation!", token.getUid());
             return null;
         }
@@ -112,7 +112,7 @@ public class PrivilegesController extends BaseController {
             return null;
         }
 
-        if(!isApproved(privilege.getUnitGroupId(), token.getUid(), PrivilegeDefinition.PRIVILEGE_READ)) {
+        if(!isApproved(privilege.getUnitGroupId(), PrivilegeDefinition.PRIVILEGE_READ)) {
             LOGGER.warn("User with id: \'{}\' try to perform not privilege operation!", token.getUid());
             return null;
         }
@@ -126,7 +126,7 @@ public class PrivilegesController extends BaseController {
                              @RequestBody Privilege privilegeDto
     ) {
 
-        if(!isApproved(privilegeDto.getUnitGroupId(), token.getUid(), PrivilegeDefinition.PRIVILEGE_UPDATE)) {
+        if(!isApproved(privilegeDto.getUnitGroupId(), PrivilegeDefinition.PRIVILEGE_UPDATE)) {
             LOGGER.warn("User with id: \'{}\' try to perform not privilege operation!", token.getUid());
             return null;
         }
@@ -153,8 +153,8 @@ public class PrivilegesController extends BaseController {
         cz.senslog.model.db.Privilege newPrivilege = modelMapper.map(privilegeDto, cz.senslog.model.db.Privilege.class);
         List<UserPrivilege> userPrivilegesToUpdate = new ArrayList<UserPrivilege>();
 
-        if (newPrivilege.getUserGroupId() != oldPrivilege.getUserGroupId() ||
-                newPrivilege.getUnitGroupId() != oldPrivilege.getUnitGroupId()) {
+        if (!newPrivilege.getUserGroupId().equals(oldPrivilege.getUserGroupId()) ||
+                !newPrivilege.getUnitGroupId().equals(oldPrivilege.getUnitGroupId())) {
 
             if (privilegeRepository.existsByUnitGroupIdAndUserGroupId(newPrivilege.getUnitGroupId(), newPrivilege.getUserGroupId())) {
                 LOGGER.warn("Privilege with Unit group id: \'{}\' and user group id \'{}\' already exists!",
@@ -190,7 +190,7 @@ public class PrivilegesController extends BaseController {
             // update UsersPrivileges
             userPrivilegesToUpdate.addAll(newUserPrivileges);
 
-        } else if (newPrivilege.getPrivileges() != oldPrivilege.getPrivileges()) {
+        } else if (!newPrivilege.getPrivileges().equals(oldPrivilege.getPrivileges())) {
             List<UserPrivilege> userPrivileges = userPrivilegeRepository.findAllByUserIdInAndUnitGroupId(
                     newUserGroup.getUsersIds(), newPrivilege.getUnitGroupId());
 
@@ -226,7 +226,7 @@ public class PrivilegesController extends BaseController {
             return HttpStatus.BAD_REQUEST;
         }
 
-        if(!isApproved(privilege.getUnitGroupId(), token.getUid(), PrivilegeDefinition.PRIVILEGE_DELETE)) {
+        if(!isApproved(privilege.getUnitGroupId(), PrivilegeDefinition.PRIVILEGE_DELETE)) {
             LOGGER.warn("User with id: \'{}\' try to perform not privilege operation!", token.getUid());
             return null;
         }
@@ -273,7 +273,9 @@ public class PrivilegesController extends BaseController {
             PrivilegeBitSet newPrivilege = new PrivilegeBitSet();
             Iterable<cz.senslog.model.db.Privilege> privileges = privilegeRepository.findAll(userPrivilege.getPrivilegesIds());
             for (cz.senslog.model.db.Privilege item : privileges) {
-                newPrivilege.or(item.getPrivileges());
+                if(item.getPrivileges() != null) {
+                    newPrivilege.or(item.getPrivileges());
+                }
             }
 
             userPrivilege.setPrivileges(newPrivilege);
@@ -310,6 +312,7 @@ public class PrivilegesController extends BaseController {
                 userPrivilege.setPrivilegesIds(new ArrayList<ObjectId>());
                 userPrivilege.setUserId(userId);
                 userPrivilege.setUnitGroupId(unitGroupId);
+                userPrivilege.setPrivileges(new PrivilegeBitSet());
                 userPrivileges.add(userPrivilege);
             }
         }

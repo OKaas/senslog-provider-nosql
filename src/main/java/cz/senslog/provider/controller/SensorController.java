@@ -51,7 +51,7 @@ public class SensorController extends BaseController {
             return HttpStatus.BAD_REQUEST;
         }
 
-        if(!isApproved(sensorCreate.getUnitGroupId(), token.getUid(), PrivilegeDefinition.SENSOR_CREATE)) {
+        if(!isApproved(sensorCreate.getUnitGroupId(), PrivilegeDefinition.SENSOR_CREATE)) {
             LOGGER.warn("User with id: \'{}\' try to perform not privilege operation!", token.getUid());
             return HttpStatus.UNAUTHORIZED;
         }
@@ -102,7 +102,7 @@ public class SensorController extends BaseController {
             return null;
         }
 
-        if(!isApproved(sensor.getUnitGroupId(), token.getUid(), PrivilegeDefinition.SENSOR_READ)) {
+        if(!isApproved(sensor.getUnitGroupId(), PrivilegeDefinition.SENSOR_READ)) {
             LOGGER.warn("User with id: \'{}\' try to perform not privilege operation!", token.getUid());
             return null;
         }

@@ -14,17 +14,16 @@ import java.util.Collections;
 public class UserToken implements UserDetails {
 
     public ObjectId uid;
-    private String name;
+    private String username;
     public String email;
     private String password;
     public Collection<? extends GrantedAuthority> authorities;
 
-    public UserToken(@NotNull ObjectId uid, @NotNull String name, @NotNull String email, @NotNull String password, @NotNull Collection<? extends GrantedAuthority> authorities) {
-        this.uid = uid;
-        this.name = name;
-        this.email = email;
+    public UserToken(){}
+
+    public UserToken(@NotNull String username, @NotNull String password) {
+        this.username = username;
         this.password = password;
-        this.authorities = authorities;
     }
 
     /* --- Collaborates --- */
@@ -52,15 +51,15 @@ public class UserToken implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return username;
     }
 
     public void setUid(ObjectId uid) {
         this.uid = uid;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String name) {
+        this.username = username;
     }
 
     public void setEmail(String email) {
@@ -102,7 +101,7 @@ public class UserToken implements UserDetails {
     toString() {
         return "UserToken{" +
                 "uid=" + uid +
-                ", name='" + name + '\'' +
+                ", name='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", authorities=" + authorities +

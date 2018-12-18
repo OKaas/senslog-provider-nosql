@@ -36,12 +36,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+//        http.authorizeRequests().anyRequest().permitAll();
+//        http.httpBasic();
+//        http.csrf().disable();
+//
+//        http.httpBasic().authenticationEntryPoint(authenticationEntryPoint());
+//        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint());
+
         http.authorizeRequests().anyRequest().fullyAuthenticated();
         http.httpBasic();
         http.csrf().disable();
 
         http.httpBasic().authenticationEntryPoint(authenticationEntryPoint());
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint());
+
     }
 
     /* --- Collaborates --- */

@@ -46,15 +46,14 @@ public class UserService implements UserDetailsService {
 
         User user = userRepository.findByNameEquals(username);
 
-        // get token
-        final String accessToken = request.getHeader("header-name");
-
         if (user == null) {
             throw new UsernameNotFoundException("Username " + username + " not found");
         }
 
-        UserToken userToken = new UserToken(user.getUid(), user.getName(), user.getEmail(), user.getPassword(),
-                getGrantedAuthorities(username));
+        UserToken userToken = new UserToken(user.getName(), user.getPassword());
+        userToken.setEmail(user.getEmail());
+        userToken.setUid(user.getUid());
+
 
         // set to context
         final UsernamePasswordAuthenticationToken authentication =
@@ -62,7 +61,6 @@ public class UserService implements UserDetailsService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return userToken;
-
     }
 
     /* --- Collaborates --- */

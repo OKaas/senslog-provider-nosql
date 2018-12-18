@@ -32,7 +32,7 @@ public class UnitsController extends BaseController {
                              @RequestBody UnitCreate unitCreate
     ) {
 
-        if(!isApproved(unitCreate.getUnitGroupId(), token.getUid(), PrivilegeDefinition.UNITS_CREATE)) {
+        if(!isApproved(unitCreate.getUnitGroupId(), PrivilegeDefinition.UNITS_CREATE)) {
             LOGGER.warn("User with id: \'{}\' try to perform not privilege operation!", token.getUid());
             return HttpStatus.UNAUTHORIZED;
         }
@@ -73,7 +73,7 @@ public class UnitsController extends BaseController {
             return null;
         }
 
-        if(!isApproved(unitGroup.getUid(), token.getUid(), PrivilegeDefinition.UNITS_READ)) {
+        if(!isApproved(unitGroup.getUid(), PrivilegeDefinition.UNITS_READ)) {
             LOGGER.warn("User with id: \'{}\' try to perform not privilege operation!", token.getUid());
             return null;
         }
